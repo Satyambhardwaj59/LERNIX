@@ -11,10 +11,16 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",
+    "humanize-duration": "^3.33.0",
+    "quill": "^2.0.3",
+    "rc-progress": "^4.0.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.1",
-    "tailwindcss": "^4.1.13"
+    "react-simple-star-rating": "^5.1.7",
+    "react-youtube": "^10.1.0",
+    "tailwindcss": "^4.1.13",
+    "uniqid": "^5.4.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
