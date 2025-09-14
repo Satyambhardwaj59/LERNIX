@@ -1,0 +1,7 @@
+<!-- sample rectangle -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <circle cx="128" cy="128" r="128" fill="blue"/>
+  <text x="50%" y="55%" text-anchor="middle" font-size="120" font-family="Arial, Helvetica, sans-serif" fill="white" font-weight="bold" dy=".3em">
+    Lnx
+  </text>
+</svg>
