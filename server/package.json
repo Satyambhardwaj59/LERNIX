@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Build Lernix a Learning Management System",
-  "main": "Server.js",
+  "main": "server.js",
   "scripts": {
-    "server": "nodemon Server.js",
-    "start": "node Server.js"
+    "server": "nodemon server.js",
+    "start": "node server.js"
   },
   "author": "Satyam",
   "license": "ISC",
