@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import connectDB from './config/mongoDB.js';
+import { clerkWebhooks } from './controllers/webhooks.js';
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 
 // Routes
 app.use('/', (req, res) => res.send('API is running...'));
+app.post('/clerk', express.json(), clerkWebhooks)
 
 const PORT = process.env.PORT || 5000;
 
