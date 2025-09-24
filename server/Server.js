@@ -1,24 +1,19 @@
+// api/index.js
 import express from 'express';
+import serverless from 'serverless-http';
 import cors from 'cors';
 import 'dotenv/config';
-import connectDB from './config/mongoDB.js';
-import { clerkWebhooks } from './controllers/webhooks.js';
+import connectDB from '../config/mongoDB.js';
+import { clerkWebhooks } from '../controllers/webhooks.js';
 
 const app = express();
-
-// Middlewares 
 app.use(cors());
 app.use(express.json());
 
-// Connect to DB
 await connectDB();
 
-// Handle favicon request (avoids 404 in browser)
 app.get('/favicon.ico', (req, res) => res.status(204).end());
+app.get('/', (req, res) => res.send('API is running...'));
+app.post('/clerk', clerkWebhooks);
 
-// Routes
-app.get('/', (req, res) => res.send('API is running...'));  // root route last
-app.post('/clerk', clerkWebhooks);       // webhook route first
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+export const handler = serverless(app);
