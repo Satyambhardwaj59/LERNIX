@@ -15,6 +15,7 @@ await connectDB();
 app.use(express.json());
 
 // Routes
+app.get('/favicon.ico', (req, res) => res.status(204).end());
 app.use('/', (req, res) => res.send('API is running...'));
 app.post('/clerk', express.json(), clerkWebhooks)
 
