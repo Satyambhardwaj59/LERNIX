@@ -40,7 +40,7 @@ const CourseDetails = () => {
     }))
   }
 
-  const enrolleCourse = async () => {
+  const enrollCourse = async () => {
     try {
       if (!userData) {
         return toast.warn("Login to Enroll");
@@ -66,7 +66,7 @@ const CourseDetails = () => {
 
   useEffect(() => {
     if (userData && courseData) {
-      setIsAlreadyEnrolled(userData?.enrolledCourse?.includes(courseData._id))
+      setIsAlreadyEnrolled(userData?.enrolledCourses?.includes(courseData._id))
     }
   }, [userData, courseData])
 
@@ -192,7 +192,7 @@ const CourseDetails = () => {
               </div>
 
             </div>
-            <button onClick={enrolleCourse} className='bg-blue-600 text-white font-medium md:mt-6 mt-4 w-full py-3 rounded'>{isAlreadyEnrolled ? "Already Enrolled" : "Enroll Now"}</button>
+            <button onClick={enrollCourse} className={`bg-blue-600 text-white font-medium md:mt-6 mt-4 w-full py-3 rounded`}>{isAlreadyEnrolled ? "Already Enrolled" : "Enroll Now"}</button>
 
             <div className='pt-6'>
               <p className='md:text-xl text-lg font-medium text-gray-800'>What's in the course</p>
