@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Build Lernix a Learning Management System",
-  "main": "server.js",
   "scripts": {
     "server": "nodemon server.js",
     "start": "node server.js"
