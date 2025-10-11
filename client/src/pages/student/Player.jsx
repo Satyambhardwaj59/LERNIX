@@ -69,15 +69,12 @@ const Player = () => {
 
        if (data.success) {
         setProgressData(data.progressData)
-        console.log(data);
         
       } else {
         toast.error(data.message)
-        console.log(data);
       }
     } catch (error) {
       toast.error(error.message)
-      console.log(error);
     }
   }
 

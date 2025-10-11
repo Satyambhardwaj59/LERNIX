@@ -1,9 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import uniqid from 'uniqid';
 import Quill from 'quill'
 import { assets } from '../../assets/assets';
+import AppContext from '../../context/AppContext';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const AddCourse = () => {
+
+  const { backendUrl, getToken } = useContext(AppContext)
 
   const quilRef = useRef(null);
   const editorRef = useRef(null);
@@ -36,11 +41,11 @@ const AddCourse = () => {
         };
         setChapters([...chapters, newChapter]);
       }
-    } else if (action === 'remove'){
+    } else if (action === 'remove') {
       setChapters(chapters.filter((chapter) => chapter.chapterId !== chapterId));
     } else if (action === 'toggle') {
       setChapters(
-        chapters.map((chapter) => chapter.chapterId === chapterId ? {...chapter, collapsed: !chapter.collapsed} : chapter)
+        chapters.map((chapter) => chapter.chapterId === chapterId ? { ...chapter, collapsed: !chapter.collapsed } : chapter)
       )
     }
   }
@@ -49,7 +54,7 @@ const AddCourse = () => {
     if (action === 'add') {
       setCurrentChapterId(chapterId);
       setShowPopup(true);
-    } else if (action === 'remove'){
+    } else if (action === 'remove') {
       setChapters(
         chapters.map((chapter) => {
           if (chapter.chapterId === chapterId) {
@@ -66,7 +71,7 @@ const AddCourse = () => {
       chapters.map((chapter) => {
         if (chapter.chapterId === currentChapterId) {
           const newLecture = {
-            ...lectureDeteails, 
+            ...lectureDeteails,
             lectureOrder: chapter.chapterContent.length > 0 ? chapter.chapterContent.slice(-1)[0].lectureOrder + 1 : 1,
             lectureId: uniqid()
           };
@@ -84,9 +89,99 @@ const AddCourse = () => {
     });
   }
 
+  // const handleSubmit = async (e) => {
+  //   try {
+  //     e.preventDefault()
+  //     if (!image) {
+  //       toast.error("Thumbnail Not Selected")
+  //     }
+
+  //     const courseData = {
+  //       courseTitle,
+  //       courseDescription: quilRef.current.root.innerHTML,
+  //       coursePrice: Number(coursePrice),
+  //       discount: Number(discount),
+  //       courseContent: chapters,
+  //     }
+
+  //     const formData = new FormData();
+  //     formData.append('courseData', JSON.stringify(courseData))
+  //     formData.append('image', image)
+
+  //     const token = await getToken();
+  //     const { data } = await axios.post(backendUrl + '/api/educator/add-course', formData, { headers: { Authorization: `Bearer ${token}` } });
+
+  //     if (data.success) {
+  //       toast.success(data.message);
+  //       setCourseTitle('');
+  //       setCoursePrice(0);
+  //       setDiscount(0);
+  //       setImage(null);
+  //       setChapters([]);
+  //       quilRef.current.root.innerHTML = "";     
+  //     } else {
+  //       toast.error(data.message)
+  //     }
+  //   } catch (error) {
+  //     toast.error(error.message)
+  //   }
+  // }
+
   const handleSubmit = async (e) => {
-    e.preventDefault()
+  try {
+    e.preventDefault();
+
+    if (!image) {
+      toast.error("Thumbnail Not Selected");
+      return; // stop submission if no image
+    }
+
+    // Ensure all isPreviewFree values are Boolean
+    const sanitizedChapters = chapters.map(chapter => ({
+      ...chapter,
+      chapterContent: chapter.chapterContent.map(lecture => ({
+        ...lecture,
+        isPreviewFree: Boolean(lecture.isPreviewFree), // ✅ force Boolean
+      }))
+    }));
+
+    const courseData = {
+      courseTitle,
+      courseDescription: quilRef.current.root.innerHTML,
+      coursePrice: Number(coursePrice),
+      discount: Number(discount),
+      courseContent: sanitizedChapters,
+    };
+
+    const formData = new FormData();
+    formData.append('courseData', JSON.stringify(courseData));
+    formData.append('image', image);
+
+    const token = await getToken();
+    const { data } = await axios.post(
+      `${backendUrl}/api/educator/add-course`,
+      formData,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (data.success) {
+      toast.success(data.message);
+
+      // Reset form
+      setCourseTitle('');
+      setCoursePrice(0);
+      setDiscount(0);
+      setImage(null);
+      setChapters([]);
+      quilRef.current.root.innerHTML = "";
+    } else {
+      toast.error(data.message);
+    }
+  } catch (error) {
+    toast.error(error.message);
   }
+};
+
 
   useEffect(() => {
     // Initate Quill only once
@@ -182,11 +277,11 @@ const AddCourse = () => {
                 <div className='mb-2'>
                   <p>is Preview Free?</p>
                   <input type="checkbox" className='mt-1 scale-125'
-                  checked={lectureDeteails.isPreviewFree}  onChange={(e) => setLectureDetails({ ...lectureDeteails, isPreviewFree: e.target.value })} />
+                    checked={lectureDeteails.isPreviewFree} onChange={(e) => setLectureDetails({ ...lectureDeteails, isPreviewFree: e.target.checked  })} />
                 </div>
-            <button onClick={addLecture} type='button' className='w-full bg-blue-400 text-white px-4 py-2 rounded'>Add</button>
+                <button onClick={addLecture} type='button' className='w-full bg-blue-400 text-white px-4 py-2 rounded'>Add</button>
 
-            <img src={assets.cross_icon} onClick={() => setShowPopup(false)} className='absolute top-4 right-4 w-4 cursor-pointer' alt="" />
+                <img src={assets.cross_icon} onClick={() => setShowPopup(false)} className='absolute top-4 right-4 w-4 cursor-pointer' alt="" />
 
               </div>
             </div>)
